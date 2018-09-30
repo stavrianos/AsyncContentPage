@@ -10,32 +10,43 @@ namespace AsyncContentPage
 
         public AsyncContentPage()
         {
-            ((NavigationPage)Xamarin.Forms.Application.Current.MainPage).Popped += AsyncContentPage_Popped; 
+            if (Xamarin.Forms.Application.Current.MainPage is NavigationPage)
+            {
+                ((NavigationPage)Xamarin.Forms.Application.Current.MainPage).Popped += AsyncContentPage_Popped;
+            }
+            else
+            {
+                Xamarin.Forms.Application.Current.ModalPopped += AsyncContentPage_Popped;
+            }
         }
 
-        private void AsyncContentPage_Popped(object sender, NavigationEventArgs e)
+        private void AsyncContentPage_Popped(object sender, EventArgs e)
         {
-            if (!Result.HasValue) this.Result = false;
+            if (!Result.HasValue)
+            {
+                this.Result = false;
+            }
         }
     }
 
     public static class AsyncContentTask
     {
-        public static async Task<bool> PushAsyncWithReply(this INavigation navigation,AsyncContentPage page)
+        public static async Task<bool> PushAsyncWithReply(this INavigation navigation, AsyncContentPage page)
         {
             TaskCompletionSource<bool> taskCompletionSource = new TaskCompletionSource<bool>();
             if (navigation.NavigationStack.Count > 0)
+            {
                 await navigation.PushAsync(page);
-            else if (navigation.ModalStack.Count > 0)
-                await navigation.PushModalAsync(page);
+            }
             else
-                throw new NullReferenceException
+            {
+                throw new NavigationPageIsNullException("It's recommended that a NavigationPage should be populated with ContentPage instances only.")
                 {
-                    Source = "It's recommended that a NavigationPage should be populated with ContentPage instances only.",
-                     HelpLink = "https://docs.microsoft.com/en-us/xamarin/xamarin-forms/app-fundamentals/navigation/hierarchical",                    
+                    HelpLink = "https://docs.microsoft.com/en-us/xamarin/xamarin-forms/app-fundamentals/navigation/hierarchical",
                 };
-            
-            Xamarin.Forms.Device.StartTimer(new TimeSpan(100), () => 
+            }
+
+            Xamarin.Forms.Device.StartTimer(new TimeSpan(100), () =>
             {
                 if (page.Result.HasValue)
                 {
@@ -46,6 +57,22 @@ namespace AsyncContentPage
             });
             return await taskCompletionSource.Task;
         }
-          
+
+        public static async Task<bool> PushModalAsyncWithReply(this INavigation navigation, AsyncContentPage page)
+        {
+            TaskCompletionSource<bool> taskCompletionSource = new TaskCompletionSource<bool>();
+            await navigation.PushModalAsync(page);
+            Xamarin.Forms.Device.StartTimer(new TimeSpan(100), () =>
+            {
+                if (page.Result.HasValue)
+                {
+                    taskCompletionSource.SetResult(page.Result.Value);
+                    return false;
+                }
+                return true;
+            });
+
+            return await taskCompletionSource.Task;
+        }
     }
 }
