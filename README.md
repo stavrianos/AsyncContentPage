@@ -1,5 +1,5 @@
 # Async Content Page for Xamarin Forms
-AsyncContentPage is a cross platform plugin form Xamarin.Forms which allows to have a content page that 
+AsyncContentPage is a cross platform plugin form Xamarin.Forms which allows to have a content page that can await as normal but also can wait for a boolean response.
 
 
 ## Setup 
