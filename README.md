@@ -1,7 +1,7 @@
 # Async Content Page for Xamarin Forms
 AsyncContentPage is a cross platform plugin form Xamarin.Forms which allows to have a content page that can await as normal but also can wait for a boolean response.
 
-[![Build Status](https://stavrianos.visualstudio.com/Async%20Content%20Page/_apis/build/status/Async%20Content%20Page-CI)](https://stavrianos.visualstudio.com/Async%20Content%20Page/_build/latest?definitionId=4)
+[![Build Status](https://stavrianos.visualstudio.com/AsyncContentPage/_apis/build/status/Async%20Content%20Page-CI)](https://stavrianos.visualstudio.com/AsyncContentPage/_build/latest?definitionId=4)
 
 ## Setup 
 * Available on Nuget https://www.nuget.org/packages/AsyncContentPage/
